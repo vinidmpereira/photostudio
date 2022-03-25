@@ -1,0 +1,30 @@
+[
+    {
+      "model": "contracts.type",
+      "pk": 1,
+      "fields": {
+        "name": "Casamento"
+      }
+    },
+    {
+        "model": "contracts.type",
+        "pk": 2,
+        "fields": {
+          "name": "Aniversário"
+        }
+      },
+      {
+        "model": "contracts.type",
+        "pk": 3,
+        "fields": {
+          "name": "Batizado"
+        }
+      },
+      {
+        "model": "contracts.type",
+        "pk": 4,
+        "fields": {
+          "name": "Debutante"
+        }
+      }
+  ]

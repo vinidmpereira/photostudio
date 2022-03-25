@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/checkbox.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/dropdown.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/popup.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/calendar.min.css' %}">
+{% endblock css_files %}
+
+{% block title %}
+    <h1>Solicitação de Orçamento</h1>
+{% endblock title %}
+
+
+
+{% block body %}
+ <div class="row">
+        
+     <div class="column">
+         <h2 class="ui teal image header">
+            <img src="{% static 'logo.svg' %}" class="image">
+            <div class="content">
+                Preencha todos os campos com cuidado
+            </div>
+         </h2>
+            {% if form.errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="ui error message">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+         <form class="ui large form" method="POST">
+               
+                
+             {% csrf_token %}
+             <div class="ui stacked segment">
+                <div class="two fields">
+                <div class="field">
+                        <div class="ui calendar" id="event_date">
+                            <label>{{ form.event_date.label }}</label>
+                            <div class="ui input left icon">
+                                <i class="calendar icon"></i>                                
+                                {{ form.event_date }}
+                            </div>
+                            {% if form.event_date.errors %}
+                                <div class="ui negative message">
+                                        <ol>
+                                        {% for error in form.event_date.errors %}
+                                            <ol><strong>{{ error|escape }}</strong></ol>
+                                        {% endfor %}
+                                        </ol>    
+                                </div>
+                                
+                            {% endif %}
+                        </div>
+
+
+                </div>                
+                    <div class="field">
+                            <label>{{ form.event_name.label }}</label>
+                            
+                            {{ form.event_name }}
+                            {% if form.event_name.errors %}
+                                <div class="ui negative message">
+                                        <ol>
+                                        {% for error in form.event_name.errors %}
+                                            <ol><strong>{{ error|escape }}</strong></ol>
+                                        {% endfor %}
+                                        </ol>    
+                                </div>
+                                
+                            {% endif %}
+                    </div>
+                </div><!-- End two fields -->
+                    <div class="field">
+                            <label>{{ form.note.label }}</label>
+                            
+                            {{ form.note }}
+                            {% if form.note.errors %}
+                                <div class="ui negative message">
+                                        <ol>
+                                        {% for error in form.note.errors %}
+                                            <ol><strong>{{ error|escape }}</strong></ol>
+                                        {% endfor %}
+                                        </ol>    
+                                </div>
+                                
+                            {% endif %}
+                    </div>
+
+                <button type="submit" class="ui fluid large teal submit button">Salvar</button>   
+             </div>
+         </form>
+     </div>
+ </div>
+{% endblock body %}
+
+
+
+{% block js_files %}
+<script src="{% static 'components/popup.js' %}"></script>
+<script src="{% static 'components/dropdown.js' %}"></script>
+<script src="{% static 'js/calendar.min.js' %}"></script>
+{% endblock js_files %}
+    
+{% block js_scripts %}
+<script>
+$(document).ready(function () {
+            $('.ui.dropdown').dropdown();
+        });
+
+$('#event_date').calendar({
+    monthFirst: false,
+    ampm: false,
+    formatter: {
+    date: function (date, settings) {
+      if (!date) return '';
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+      return day + '/' + month + '/' + year;
+    }},
+});
+</script>
+{% endblock js_scripts %}

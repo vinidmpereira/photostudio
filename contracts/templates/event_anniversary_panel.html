@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/dropdown.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.css"/> 
+{% endblock css_files %}
+
+
+{% block title %}
+<div class="ui teal header">
+    <div class="content">Eventos fazendo Aniversário Hoje</div>
+</div>
+    
+{% endblock title %}
+
+
+{% block body %}
+    <div class="row">
+        <div class="column">
+                    <table id="contract-grid" class="ui black striped table">
+                        <thead>
+                            <th>Data do Evento</th>
+                            <th>Cliente</th>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Detalhes</th>
+                        </thead>
+                    </table>
+        </div>
+    </div>
+    
+{% endblock body %}
+
+
+{% block js_files %}
+<script src="{% static 'components/dropdown.js' %}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
+<script src="{% static 'js/moment.js' %}"></script>
+<script src="{% static 'js/jquery-mask.js' %}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+
+<script src="{% static 'js/jquery-mask.js' %}"></script>
+{% endblock js_files %}
+
+{% block js_scripts %}
+<script>
+
+$.fn.dataTable.moment( 'DD/MM/YYYY HH:mm' );
+$(document).ready(function() {
+    $('#contract-grid').DataTable( {
+        dom: 'Bfrtip',
+        buttons:[],
+        "scrollY": false,
+        "paging": false,
+        "searching": false,
+        "responsive": true,
+        "order": [[ 0, "desc" ]],
+        "ajax":{
+            "url": "/api/events_anniversary_today/",
+            "dataSrc": '',
+            "type":'GET',
+            },
+        "columns":[
+            { "data": "event_date" },
+            { "data": "contractant" },
+            { "data": "event_name" },
+            { "data": "event_type" },
+            { "data": "get_detail_url",
+            "render": function ( data, type, full, meta ) {
+            return '<a class="ui small primary button" href="'+data+'">Detalhes</a>';         }
+            },
+        ],
+    } );
+    // space
+} );
+
+
+</script>
+
+{% endblock js_scripts %}

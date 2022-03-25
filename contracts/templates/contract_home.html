@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/dropdown.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.css"/> 
+{% endblock css_files %}
+
+
+{% block title %}
+<div class="ui teal header">
+    <div class="content">Contratos</div>
+</div>
+    
+{% endblock title %}
+
+
+{% block body %}
+    <div class="row">
+        <div class="column">
+                <form class="ui small form" method="GET">
+                        <div class="field">
+                                <label>{{ form.contract_type.label }}</label>
+                                {{ form.contract_type }}
+                            </div>
+                        <!-- <div class="field">
+                            <div class="ui calendar" id="search_date_ini">
+                            <label>{{ form.search_date_ini.label }}</label>
+                                <div class="ui input left icon">
+                                <i class="calendar icon"></i>                                
+                                {{ form.search_date_ini }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui calendar" id="search_date_end">
+                            <label>{{ form.search_date_end.label }}</label>
+                                <div class="ui input left icon">
+                                <i class="calendar icon"></i>                                
+                                {{ form.search_date_end }}
+                                </div>
+                            </div>
+                        </div> -->
+                </form>
+                
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
+                    <table id="contract-grid" class="ui black striped table">
+                        <thead>
+                            <th>Data do Evento</th>
+                            <th>Cliente</th>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Valor</th>
+                            <th>Detalhes</th>
+                        </thead>
+                    </table>
+        </div>
+    </div>
+    
+{% endblock body %}
+
+
+{% block js_files %}
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
+<script src="{% static 'components/dropdown.js' %}"></script>
+<script src="{% static 'js/moment.js' %}"></script>
+<script src="{% static 'js/jquery-mask.js' %}"></script>
+<script src="{% static 'components/popup.js' %}"></script>
+<script src="{% static 'js/calendar.min.js' %}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+{% endblock js_files %}
+
+{% block js_scripts %}
+<script>
+// $('#search_date_ini').calendar({
+//     type: 'date',
+//     formatter: {
+//     date: function (date, settings) {
+//       if (!date) return '';
+//       var day = date.getDate();
+//       var month = date.getMonth() + 1;
+//       var year = date.getFullYear();
+//       return day + '/' + month + '/' + year;
+//     }},
+// });
+
+// $('#search_date_end').calendar({
+//     type: 'date',
+//     formatter: {
+//     date: function (date, settings) {
+//       if (!date) return '';
+//       var day = date.getDate();
+//       var month = date.getMonth() + 1;
+//       var year = date.getFullYear();
+//       return day + '/' + month + '/' + year;
+//     }},
+// });
+
+    $(document).ready(function () {
+            $('.ui.dropdown').dropdown();
+        });
+
+ctype =  document.getElementById('id_contract_type')
+sdate_ini =  document.getElementById('id_search_date_ini')
+sdate_end =  document.getElementById('id_search_date_end')
+$.fn.dataTable.moment( 'DD/MM/YYYY HH:mm' );
+$(document).ready(function() {
+    $('#contract-grid').DataTable( {
+        dom: 'Bfrtip',
+        buttons:[],
+        "scrollY": false,
+        "paging": false,
+        "searching": false,
+        "responsive": true,
+        "order": [[ 0, "desc" ]],
+        "ajax":{
+            "url": "/api/contracts/",
+            "dataSrc": '',
+            "type":'GET',
+            "data": function (d) { // pass additional
+                d.contract_type = ctype.value
+                // d.search_date_ini = sdate_ini.value
+                // d.search_date_end = sdate_end.value
+                 }
+            },
+        "columns":[
+            { "data": "event_date" },
+            { "data": "contractant" },
+            { "data": "event_name" },
+            { "data": "event_type" },
+            { "data": "contract_value" },
+            { "data": "get_detail_url",
+            "render": function ( data, type, full, meta ) {
+            return '<a class="ui small primary button" href="'+data+'">Detalhes</a>';         }
+            },
+        ],
+    } );
+    // space
+} );
+
+$("#id_contract_type").on('change', function(){
+    $('#contract-grid').DataTable().ajax.reload();
+})
+
+</script>
+
+{% endblock js_scripts %}
+    

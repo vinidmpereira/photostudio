@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    <h1>Plataforma PhotoStudio</h1>
+{% endblock title %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/table.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.css"/> 
+{% endblock css_files %}
+
+{% block body %}
+<div class="row">
+        <div class="ten wide column">
+            <p>Solicitações de Proposta</p>
+
+            <p>Os pedidos abaixo ainda não tiveram nenhuma proposta,necessitam avalização</p>
+            
+        </div>
+</div>
+
+
+<div class="row">
+        <div class="column">
+            <div class="ui header">Solicitações</div>
+                <table id="qr-grid" class="ui black striped table">
+                        <thead>
+                            <th>Data Solicitação</th>
+                            <th>Data do Evento</th>
+                            <th>Nome Evento</th>
+                            <th>Cliente</th>
+                            <th>Proposta</th>
+                            <th>Detalhes</th>
+                        </thead>
+                    </table>
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+
+{% block js_files %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
+<script src="{% static 'js/jquery-mask.js' %}"></script>
+{% endblock js_files %}
+
+{% block js_scripts %}
+<script>
+
+
+$(document).ready(function() {
+    $('#qr-grid').DataTable( {
+        dom: 'Bfrtip',
+        buttons:[],
+        "scrollY": false,
+        "paging": false,
+        "searching": false,
+        "ajax":{
+            "url": "/api/quote_request_awaiting_evaluation/",
+            "dataSrc": '',
+            "type":'GET',
+            },
+        "columns":[
+            { "data": "request_timestamp" },
+            { "data": "event_date" },
+            { "data": "event_name" },
+            { "data": "client" },
+            { "data": "get_create_quote_url",
+            "render": function ( data, type, full, meta ) {
+            return '<a class="ui small primary button" href="'+data+'">Gerar Proposta</a>';         }
+            },
+            { "data": "get_detail_url",
+            "render": function ( data, type, full, meta ) {
+            return '<a class="ui small primary button" href="'+data+'">Detalhes</a>';         }
+            },
+        ],
+    } );
+    // space
+} );
+</script>
+
+{% endblock js_scripts %}
+    

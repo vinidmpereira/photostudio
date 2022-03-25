@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/table.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.css"/> 
+{% endblock css_files %}
+
+{% block title %}
+    <h1>Detalhes Pedido de proposta</h1>
+{% endblock title %}
+
+
+
+{% block body %}
+<div class="row">
+        <div class="column">
+            <div class="ui segment">
+                <div class="ui header">{{ object.event_name }}</div>
+                <p>Data da Solicitação : {{ object.request_timestamp }}</p>
+                <br>
+                <p>Data do Evento : {{ object.event_date }}</p>
+                <p>Observações : {{ object.note }}</p>
+                <p>Cliente : {{ object.client }}</p>
+            </div>
+            <div class="ui fluid buttons">
+                    <a href="{{ object.create_quote }}" class="big ui positive button">Criar Proposta</a>
+            </div>
+        </div>
+</div>
+    <div class="row">
+            <div class="column">
+                <div class="ui header">Propostas</div>
+                    <table id="qr-grid" class="ui black striped table">
+                            <thead>
+                                <th>Data de Analise</th>
+                                <th>Preço</th>
+                                <th>Detalhes</th>
+                            </thead>
+                    </table>
+                </div>
+        </div>
+    
+    
+    {% endblock body %}
+    
+    
+    {% block js_files %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
+    {% endblock js_files %}
+    
+    {% block js_scripts %}
+    <script>
+    
+    var quote_request = {{ object.pk }};
+    
+    $(document).ready(function() {
+        $('#qr-grid').DataTable( {
+            dom: 'Bfrtip',
+            buttons:[],
+            "scrollY": false,
+            "paging": false,
+            "searching": false,
+            "ajax":{
+                "url": "/api/quotes/",
+                "dataSrc": '',
+                "type":'GET',
+                "data": function (d) { // pass additional        
+                    d.quote_request = quote_request; 
+                     }
+                },
+            "columns":[
+                { "data": "evaluation_date" },
+                { "data": "proposal_value" },
+                { "data": "get_detail_url",
+                "render": function ( data, type, full, meta ) {
+                return '<a class="ui small primary button" href="'+data+'">Detalhes</a>';         }
+                },
+            ],
+        } );
+        // space
+    } );
+    </script>
+    
+    {% endblock js_scripts %}
+    

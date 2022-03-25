@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/checkbox.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/dropdown.css' %}">
+{% endblock css_files %}
+
+{% block title %}
+    <h1>Contrato</h1>
+{% endblock title %}
+
+
+{% block body %}
+
+<div class="row">
+    <div class="column">
+        <div class="ui segment">
+            <div class="ui header"><h1>{{ object.event_name|default_if_none:"&nbsp;" }}</h1></div>
+            <br>
+            <p>Data do Evento : {{ object.event_date|default_if_none:"&nbsp;" }}</p>
+            <p>Tipo : {{ object.event_type|default_if_none:"&nbsp;" }}</p>
+            <p>Local : {{ object.local|default_if_none:"&nbsp;" }}</p>
+            <p>Cliente : {{ object.contractant|default_if_none:"&nbsp;" }}
+                                
+            <div class="ui segment">
+                <div class="ui header">Dados contratante</div>
+                <p>Endereço: {{ object.contractant.address|default_if_none:"&nbsp;" }}</p>
+                <p>Bairro: {{ object.contractant.address_bairro|default_if_none:"&nbsp;" }}</p>
+                <p>CEP: {{ object.contractant.postal_code|default_if_none:"&nbsp;" }}</p>
+                <div class="ui header">Contato</div>
+                <p>Telefone : {{ object.contractant.phonenumber|default_if_none:"&nbsp;" }}</p>
+                <p>Telefone : {{ object.contractant.phonenumber_2|default_if_none:"&nbsp;" }}</p>
+                <p>Email : {{ object.contractant.email|default_if_none:"&nbsp;" }}</p>
+                <p><a class="ui small primary button" href="{{ object.contractant.get_detail_url }}">Acesso ao cadastro do cliente</a></p>
+            </div>
+            </p>
+            <p>Observações : {{ object.note|default_if_none:"&nbsp;" }}</p>
+            <p>R$ : {{ object.contract_value|default_if_none:"&nbsp;" }}</p>
+            
+            {% if object.contract_file %}
+            <div class="ui labeled icon button">
+                <a href="{{ object.contract_file.url }}" class="ui button">Contrato Digitalizado</a>
+                <i class="file outline icon"></i>
+            </div>
+                
+            {% endif %}
+                
+            
+            <hr>
+            <div class="ui fluid buttons">
+                <a href="{{ object.get_update_url }}" class="big ui blue button">Atualizar Contrato</a>
+                <div class="or" data-text='ou'></div>
+                <a href="{{ object.get_delete_url }}" class="big ui red button">Deletar Contrato</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock body %}
+    

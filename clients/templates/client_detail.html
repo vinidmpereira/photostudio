@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/table.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.css"/> 
+{% endblock css_files %}
+
+
+{% block title %}
+<div class="ui teal header">
+    <div class="content">{{ object.name }}</div>
+</div>
+    
+{% endblock title %}
+
+
+{% block body %}
+    <div class="row">
+        <div class="column">
+                <div class="ui fluid buttons">
+                        <a href="{{ object.get_update_url }}" class="medium ui blue button">Editar Cliente</a>\
+                        <a href="{{ object.get_create_contract_url }}" class="medium ui positive button">Criar Contrato</a>
+                        <a href="{{ object.get_delete_url }}" class="medium ui red button">Deletar Cliente</a>
+                </div>
+            <div class="ui segment">
+                <div class="ui header">Dados pessoais</div>
+                <p>Data de Nascimento : {{ object.birthday|default_if_none:"&nbsp;" }}</p>
+                <p>Genêro : {{ object.gender|default_if_none:"&nbsp;" }}</p>
+                <p>CPF : {{ object.cpf|default_if_none:"&nbsp;" }}</p>
+                <p>RG : {{ object.birthday|default_if_none:"&nbsp;" }} {{ object.rg_issuer|default_if_none:"&nbsp;" }}</p>
+            </div>
+            <div class="ui segment">
+                <div class="ui header">Endereço</div>
+                <p>Endereço: {{ object.address|default_if_none:"&nbsp;" }}</p>
+                <p>Bairro: {{ object.address_bairro|default_if_none:"&nbsp;" }}</p>
+                <p>CEP: {{ object.postal_code|default_if_none:"&nbsp;" }}</p>
+            </div>
+            <div class="ui segment">
+                <div class="ui header">Contato</div>
+                <p>Telefone : {{ object.phonenumber|default_if_none:"&nbsp;" }}</p>
+                <p>Telefone : {{ object.phonenumber_2|default_if_none:"&nbsp;" }}</p>
+                <p>Email : {{ object.email|default_if_none:"&nbsp;" }}</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="column">
+            <h2>Solicitações</h2>
+                <table id="qr-grid" class="ui black striped table">
+                        <thead>
+                            <th>Data Solicitação</th>
+                            <th>Data do Evento</th>
+                            <th>Nome Evento</th>
+                            <th>Cliente</th>
+                            <th>Proposta</th>
+                            <th>Detalhes</th>
+                        </thead>
+                    </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
+            <h2>Contratos</h2>
+                <table id="contract-grid" class="ui black striped table">
+                        <thead>
+                            <th>Data do Evento</th>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Valor</th>
+                            <th>Detalhes</th>
+                        </thead>
+                    </table>
+        </div>
+    </div>
+    
+{% endblock body %}
+
+
+{% block js_files %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
+<script src="{% static 'js/jquery-mask.js' %}"></script>
+{% endblock js_files %}
+
+{% block js_scripts %}
+<script>
+
+var client = {{ object.pk }};
+
+$(document).ready(function() {
+    $('#qr-grid').DataTable( {
+        dom: 'Bfrtip',
+        buttons:[],
+        "scrollY": false,
+        "paging": false,
+        "searching": false,
+        "responsive": true,
+        "ajax":{
+            "url": "/api/quote_requests/",
+            "dataSrc": '',
+            "type":'GET',
+            "data": function (d) { // pass additional        
+                d.client = client; 
+                 }
+            },
+        "columns":[
+            { "data": "request_timestamp" },
+            { "data": "event_date" },
+            { "data": "event_name" },
+            { "data": "client" },
+            { "data": "get_create_quote_url",
+            "render": function ( data, type, full, meta ) {
+            return '<a class="ui small primary button" href="'+data+'">Gerar Proposta</a>';         }
+            },
+            { "data": "get_detail_url",
+            "render": function ( data, type, full, meta ) {
+            return '<a class="ui small primary button" href="'+data+'">Detalhes</a>';         }
+            },
+        ],
+    } );
+    // space
+} );
+
+$(document).ready(function() {
+    $('#contract-grid').DataTable( {
+        dom: 'Bfrtip',
+        buttons:[],
+        "scrollY": false,
+        "paging": false,
+        "searching": false,
+        "responsive": true,
+        "ajax":{
+            "url": "/api/contracts/",
+            "dataSrc": '',
+            "type":'GET',
+            "data": function (d) { // pass additional        
+                d.client = client; 
+                 }
+            },
+        "columns":[
+            { "data": "event_date" },
+            { "data": "event_name" },
+            { "data": "event_type" },
+            { "data": "contract_value" },
+            { "data": "get_detail_url",
+            "render": function ( data, type, full, meta ) {
+            return '<a class="ui small primary button" href="'+data+'">Detalhes</a>';         }
+            },
+        ],
+    } );
+    // space
+} );
+
+</script>
+
+{% endblock js_scripts %}
+    

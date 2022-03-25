@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/checkbox.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/dropdown.css' %}">
+{% endblock css_files %}
+
+{% block title %}
+    <h1>Proposta</h1>
+{% endblock title %}
+
+
+
+{% block body %}
+<div class="row">
+        <div class="column">
+            <div class="ui segment">
+                <div class="ui header">{{ object.quote_request.event_name }}</div>
+                <p>Data da Solicitação : {{ object.quote_request.request_timestamp }}</p>
+                <br>
+                <p>Data do Evento : {{ object.quote_request.event_date }}</p>
+                <p>Observações : {{ object.quote_request.note }}</p>
+                <p>Cliente : {{ object.quote_request.client }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+            <div class="column">
+                <div class="ui segment">
+                    <div class="ui header">Proposta</div>
+                    <p>Data da Avaliação : {{ object.evaluation_date }}</p>
+                    <br>
+                    <p>Preço : {{ object.proposal_value }}</p>
+                    <p>Observações : {{ object.note }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui fluid buttons">
+                <a href="{{ object.get_create_complete_contract_url }}" class="big ui positive button">Criar Contrato</a>
+        </div>
+   
+{% endblock body %}
+    

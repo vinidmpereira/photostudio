@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'components/checkbox.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/dropdown.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'components/popup.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/calendar.min.css' %}">
+{% endblock css_files %}
+
+{% block title %}
+    <h1>Apagar Cliente</h1>
+{% endblock title %}
+
+
+
+{% block body %}
+ <div class="row">
+     <div class="column">
+    <h2>Deseja realmente deletar o contrato </h2>
+    <p>Atenção que essa decisão é irreversível</p>
+
+
+                     <form class="ui small form" method="POST">
+               
+                
+             {% csrf_token %}
+                <button type="submit" class="ui centered large red submit button">SIM</button>   
+             </div>
+         </form>
+     </div>
+ </div>
+{% endblock body %}
+

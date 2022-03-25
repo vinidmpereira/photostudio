@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_files %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/c3.css' %}">
+{% endblock css_files %}
+
+{% block title %}
+    <h1>Contrato</h1>
+{% endblock title %}
+
+
+{% block body %}
+<div class="row">
+    <div class="column">
+        <h3>Total de Contratos por Ano</h3>
+        <div id="myChartContracts" class="ct-chart"></div>
+    </div>
+
+</div>
+
+{% endblock body %}
+{% block js_scripts %}
+<script type="text/javascript" src="{% static 'js/d3.js' %}"></script>
+<script src="{% static 'js/c3.js' %}"></script>
+
+<script>   
+    let year_url = "{% url 'get_contracts_years' %}"
+  
+    var chart = c3.generate({
+    "bindto": "#myChartContracts",
+    data: {
+        x : 'Mês',
+        columns:[
+            ['Mês','01','02','03','04','05','06','07','08','09','10','11','12']
+            ]
+        },
+    axis: {
+        x: {
+            type: 'series',
+            // tick: {
+            //     format: '%m'
+            // }
+        },
+        y:{
+
+        }
+    }
+});
+
+$.ajax({
+        url:"{% url 'get_contracts_years' %}",
+        type: 'GET',
+        dataType : 'json',
+        cache: false,
+        
+        success: function(year){
+            let c3data = []
+            $.each(year,function(index,item){
+                let yearcol=[item.event_date__year]
+                $.ajax({
+                    url:"{% url 'get_contract_totals' %}",
+                    type: 'GET',
+                    dataType : 'json',
+                    cache: false,
+                    data:{
+                        year:item.event_date__year
+                    },
+                    success: function(datum){
+                        let xcol = ['Mês']
+                        $.each(datum,function(index,item){
+                            xcol.push(item.month)
+                            yearcol.push(item.contracts_totals)
+                        })
+                        
+                        chart.load({
+                            columns:[xcol,yearcol]
+                        })
+                }
+            })
+            })
+        },
+        error: function(xhr){
+            console.error(xhr)
+        }
+    })
+
+</script>
+{% endblock js_scripts %}
